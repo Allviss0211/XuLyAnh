@@ -3,30 +3,35 @@ import sys
 import numpy as np
 from numpy import round
 import PyQt5
-from PyQt5 import QtGui, QtWidgets, QtDesigner
+from PyQt5 import QtGui, QtWidgets, QtDesigner, QtCore
 from PyQt5 import uic
+from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QVBoxLayout, QFileDialog, QPushButton, QAction
 import sys
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QImage
 from matplotlib import pyplot as plt
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()  # Call the inherited classes __init__ method
         uic.loadUi('main.ui', self)  # Load the .ui file
-        self.button = self.findChild(QtWidgets.QPushButton, 'button1')
-        self.button.clicked.connect(self.printButtonPressed)
+        self.pixmap = QPixmap('code.png')
+        self.labelImage.setPixmap(self.pixmap)
+        self.labelImage.resize(self.pixmap.width(),
+                               self.pixmap.height())
         self.show()  # Show the GUI
 
-    def printButtonPressed(self):
-        # This is executed when the button is pressed
-        print('printButtonPressed')
 
 def run():
     app = QtWidgets.QApplication(sys.argv)
     window = MainWindow()
-    app.exec_()
+    window.show()
+    sys.exit(app.exec_())
+
+
 run()
+
 
 def resize(image):
     image = cv.imread('')
@@ -84,11 +89,13 @@ def linearImg(self, img):
 
     return imgLinear
 
+
 def ShowImageGray(self, image, label):
     label.clear()
     image = QtGui.QImage(image.data, image.shape[1], image.shape[0],
                          QtGui.QImage.Format_Grayscale8).rgbSwapped()
     label.setPixmap(QtGui.QPixmap.fromImage(image))
+
 
 def blurImage(img):
     blur = cv.blur(img, (10, 10))
@@ -100,23 +107,25 @@ def blurImage(img):
 
 
 def GaussblurImage(img):
-    blur = cv.GaussianBlur(img,(5,5),0)
+    blur = cv.GaussianBlur(img, (5, 5), 0)
     plt.subplot(121), plt.imshow(img), plt.title('Original')
     plt.xticks([]), plt.yticks([])
     plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
     plt.xticks([]), plt.yticks([])
     plt.show()
 
+
 def MeanblurImage(img):
-    median = cv.medianBlur(img,5)
+    median = cv.medianBlur(img, 5)
     plt.subplot(121), plt.imshow(img), plt.title('Original')
     plt.xticks([]), plt.yticks([])
     plt.subplot(122), plt.imshow(median), plt.title('Blurred')
     plt.xticks([]), plt.yticks([])
     plt.show()
 
+
 def Bilateral(img):
-    blur = cv.bilateralFilter(img,9,75,75)
+    blur = cv.bilateralFilter(img, 9, 75, 75)
     plt.subplot(121), plt.imshow(img), plt.title('Original')
     plt.xticks([]), plt.yticks([])
     plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
