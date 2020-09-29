@@ -10,6 +10,8 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QVBoxLayout, QFil
 import sys
 from PyQt5.QtGui import QPixmap, QIcon, QImage
 from matplotlib import pyplot as plt
+from scipy import signal
+from scipy import misc
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -30,7 +32,7 @@ def run():
     sys.exit(app.exec_())
 
 
-run()
+# run()
 
 
 def resize(image):
@@ -131,6 +133,31 @@ def Bilateral(img):
     plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
     plt.xticks([]), plt.yticks([])
     plt.show()
+
+
+def getGx(img):
+    k = np.array([[0, 0, 0], [-1, 2, -1], [0, 0, 0]])
+    return cv.filter2D(img, -1, k)
+
+
+def getGy(img):
+    k = np.array([[0, -1, 0], [0, 2, 0], [0, -1, 0]])
+    return cv.filter2D(img, -1, k)
+
+
+def getMagnitude(img):
+    magn = abs(getGy(img) + getGx(img))
+    plt.imshow(magn, interpolation='nearest')
+    plt.show()
+
+def getDirection(img):
+    dic = getGy(img) / getGx(img)
+    plt.imshow(dic, interpolation='nearest')
+    plt.show()
+
+img = cv.imread('Screenshot 2020-09-29 102211.png')
+getMagnitude(img)
+getDirection(img)
 
 # if __name__ == '__main__':
 #     #run()
